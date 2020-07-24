@@ -1,25 +1,23 @@
 # nsq-prometheus-exporter
 
-## BUILD
+Forked from https://github.com/caozhipan/nsq-prometheus-exporter
+
+## Build
 ```bash
 go build -o nsq-prometheus-exporter main.go
 ```
 
-## DOCKER
+## Docker
 
-- docker build & docker run
+- Build & Push
 ```bash
 docker build -t nsq-prometheus-exporter .
-docker run -p 9527:9527  nsq-prometheus-exporter -nsq.lookupd.address=192.168.31.1:4161,192.168.31.2:4161
+docker tag nsq-prometheus-exporter mrobinsn/nsq-prometheus-exporter:$VERSION
+docker push mrobinsn/nsq-prometheus-exporter:$VERSION
 ```
 
-- use an official image
+- Run
 ```bash
-docker run -p 9527:9527  whoisyourdady/nsq-prometheus-exporter:latest -nsq.lookupd.address=192.168.31.1:4161,192.168.31.2:4161
+docker run -p 9527:9527 mrobinsn/nsq-prometheus-exporter:$VERSION -nsq.lookupd.address=192.168.31.1:4161,192.168.31.2:4161
 ```
 
-## RUN
-
-```bash
-./nsq-prometheus-exporter -nsq.lookupd.address=192.168.31.1:4161,192.168.31.2:4161
-```

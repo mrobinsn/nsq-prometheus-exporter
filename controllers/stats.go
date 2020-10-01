@@ -6,6 +6,8 @@ import (
 	"net/http"
 )
 
+var NSQDScheme = "http"
+
 type Stats struct {
 	Version   string   `json:"version"`
 	Health    string   `json:"health"`
@@ -82,7 +84,10 @@ func getPercentile(t *Topic, percentile int) float64 {
 }
 
 func getNsqdStatsByNode(node Node) (*Stats, error) {
-	nsqdURL := fmt.Sprintf("http://%s:%d/stats?format=json", node.BroadcastAddress, node.HttpPort)
+	if NSQDScheme == "https" {
+		node.HttpPort = 4152
+	}
+	nsqdURL := fmt.Sprintf("%s://%s:%d/stats?format=json", NSQDScheme, node.BroadcastAddress, node.HttpPort)
 	resp, err := http.Get(nsqdURL)
 	if err != nil {
 		return nil, err

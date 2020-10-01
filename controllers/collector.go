@@ -1,6 +1,9 @@
 package controllers
 
-import "github.com/prometheus/client_golang/prometheus"
+import (
+	"github.com/prometheus/client_golang/prometheus"
+	log "github.com/sirupsen/logrus"
+)
 
 type Metric interface {
 	collect(stats []*Stats, out chan<- prometheus.Metric)
@@ -33,6 +36,7 @@ func (c *NsqCollector) Describe(ch chan<- *prometheus.Desc) {
 func (c *NsqCollector) Collect(ch chan<- prometheus.Metric) {
 	stats, err := getNsqdStats()
 	if err != nil {
+		log.WithError(err).Error("failed to get stats")
 		return
 	}
 	for _, metric := range c.ChannelMetrics {

@@ -30,10 +30,9 @@ func main() {
 	controllers.NSQDScheme = *nsqdScheme
 
 	go func() {
-		ticker := time.NewTicker(5 * time.Second)
 		for {
 			controllers.SyncNodeList(*nsqLookupdAddress)
-			<-ticker.C
+			<-time.After(10 * time.Second)
 		}
 	}()
 

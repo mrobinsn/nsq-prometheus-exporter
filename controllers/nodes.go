@@ -28,8 +28,7 @@ var (
 )
 
 func init() {
-	http.DefaultClient.Timeout = 5 * time.Second
-
+	http.DefaultClient.Timeout = 10 * time.Second
 }
 
 func SyncNodeList(lookupdAddrs string) {

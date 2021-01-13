@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"time"
+
 	"github.com/prometheus/client_golang/prometheus"
 	log "github.com/sirupsen/logrus"
 )
@@ -34,11 +36,16 @@ func (c *NsqCollector) Describe(ch chan<- *prometheus.Desc) {
 }
 
 func (c *NsqCollector) Collect(ch chan<- prometheus.Metric) {
+	start := time.Now()
 	stats, err := getNsqdStats()
 	if err != nil {
-		log.WithError(err).Error("failed to get stats")
+		log.WithError(err).
+			WithField("dur", time.Since(start).String()).
+			Error("failed to get stats")
 		return
 	}
+	log.WithField("dur", time.Since(start).String()).Info("gathered stats")
+
 	for _, metric := range c.ChannelMetrics {
 		metric.collect(stats, ch)
 	}

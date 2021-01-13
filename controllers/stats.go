@@ -4,6 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
+
+	log "github.com/sirupsen/logrus"
 )
 
 var NSQDScheme = "http"
@@ -87,7 +90,7 @@ func getNsqdStatsByNode(node Node) (*Stats, error) {
 	if NSQDScheme == "https" {
 		node.HttpPort = 4152
 	}
-	nsqdURL := fmt.Sprintf("%s://%s:%d/stats?format=json", NSQDScheme, node.BroadcastAddress, node.HttpPort)
+	nsqdURL := fmt.Sprintf("%s://%s:%d/stats?format=json&include_mem=false", NSQDScheme, node.BroadcastAddress, node.HttpPort)
 	resp, err := http.Get(nsqdURL)
 	if err != nil {
 		return nil, err
@@ -107,10 +110,15 @@ func getNsqdStats() (stats []*Stats, err error) {
 		panic("cannot find any nodes")
 	}
 	for _, node := range NsqNodes.Producers {
+		start := time.Now()
 		st, err := getNsqdStatsByNode(node)
 		if err != nil {
 			return nil, err
 		}
+		log.WithField("dur", time.Since(start).String()).
+			WithField("node", node.HostName).
+			Info("got stats")
+
 		stats = append(stats, st)
 	}
 	return

@@ -29,7 +29,7 @@ func Test_getNsqdStatsByNode(t *testing.T) {
 	}
 	for _, tt := range params {
 		t.Run(tt.name, func(t *testing.T) {
-			_, err := getNsqdStatsByNode(tt.args.node)
+			_, err := getNsqdStatsByNode(*tt.args.node)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("getNsqdStatsByNode() error = %v, wantErr %v", err, tt.wantErr)
 				return
